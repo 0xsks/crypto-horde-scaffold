@@ -1,0 +1,17 @@
+{
+  "name": "Degen LLM",
+  "short_name": "Degen LLM",
+  "description": "Progressive Web App for Degen LLM Lite",
+  "start_url": "./",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#303030",
+  "theme_color": "#337ab7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "niko.png",
+      "type": "image/png", "sizes": "150x150"
+    }
+  ]
+}
