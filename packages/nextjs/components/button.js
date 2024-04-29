@@ -1,4 +1,3 @@
-import { useState } from "react";
 import externalContracts from "../contracts/externalContracts";
 import { ethers } from "ethers";
 import { useContractWrite } from "wagmi";
