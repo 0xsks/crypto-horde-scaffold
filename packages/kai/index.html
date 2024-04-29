@@ -1884,6 +1884,12 @@
 		margin: 0 0 3px;
 		font-weight: bold;
 	}
+	.walletAddress
+	{
+		color: white;
+		font-weight: 500;
+		font-family: 'Segoe UI', Tahoma;
+	}
 	/*--------- end instruct-UI -----------*/
 	</style>
 
@@ -1891,20 +1897,26 @@
 <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript">
 </script>
 <button id="connectWalletButton">Connect Wallet</button>
+<span id="walletAddress"></span>
 <script>
-document.getElementById('connectWalletButton').addEventListener('click', async () => {
-    if (window.ethereum) {
-        try {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            console.log('Wallet connected!');
-        } catch (error) {
-            console.error('User denied account access');
-        }
-    } else {
-        console.log('Ethereum wallet is not available');
-    }
-});
-</script>
+	document.getElementById('connectWalletButton').addEventListener('click', async () => {
+		if (window.ethereum) {
+			try {
+				const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+				console.log('Wallet connected:', accounts[0]); // Log the connected wallet address
+	
+				// Display the connected wallet address next to the button
+				document.getElementById('walletAddress').textContent = accounts[0];
+			} catch (error) {
+				console.error('User denied account access');
+				document.getElementById('walletAddress').textContent = 'Connection denied';
+			}
+		} else {
+			console.log('Ethereum wallet is not available');
+			document.getElementById('walletAddress').textContent = 'Wallet not available';
+		}
+	});
+	</script>
 
 <!--------------------end testing ------------------------------->
 	<script>
