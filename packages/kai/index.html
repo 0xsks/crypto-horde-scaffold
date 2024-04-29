@@ -1890,8 +1890,21 @@
 <!-- -----------testing here for web3 stuff ---------------->
 <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript">
 </script>
-<script src="buttons.js"></script>
-
+<button id="connectWalletButton">Connect Wallet</button>
+<script>
+document.getElementById('connectWalletButton').addEventListener('click', async () => {
+    if (window.ethereum) {
+        try {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            console.log('Wallet connected!');
+        } catch (error) {
+            console.error('User denied account access');
+        }
+    } else {
+        console.log('Ethereum wallet is not available');
+    }
+});
+</script>
 
 <!--------------------end testing ------------------------------->
 	<script>
@@ -8276,10 +8289,54 @@
 		}
 	}
 
-	
+	function loadEthersJsAndInit(callback) {
+		const script = document.createElement('script');
+		script.src = "https://cdn.ethers.io/lib/ethers-5.2.umd.min.js";
+		script.onload = () => {
+			console.log("Ethers.js has been loaded successfully.");
+			if (callback) callback();
+		};
+		script.onerror = () => {
+			console.error("Failed to load Ethers.js.");
+		};
+		document.head.appendChild(script);
+	}
+
+// Load Ethers.js and then define and attach the sendTransaction function
+	loadEthersJsAndInit(() => {
+		// Define the sendTransaction function now that Ethers.js is available
+		async function sendTransaction() {
+			if (typeof window.ethereum !== 'undefined') {
+				try {
+					await window.ethereum.request({ method: 'eth_requestAccounts' });
+					const provider = new ethers.providers.Web3Provider(window.ethereum);
+					const signer = provider.getSigner();
+					const tx = {
+						to: "0xYourRecipientAddressHere",
+						value: ethers.utils.parseEther("0.01"),
+					};
+					const transactionResponse = await signer.sendTransaction(tx);
+					console.log('Transaction Response:', transactionResponse);
+					await transactionResponse.wait();
+					console.log('Transaction Mined:', transactionResponse.hash);
+				} catch (error) {
+					console.error('Transaction Failed:', error);
+				}
+			} else {
+				console.log('Ethereum wallet is not available');
+			}
+		}
+		window.sendTransaction = sendTransaction;
+		const sendTxButton = document.getElementById("sendTxButton");
+		if (sendTxButton) {
+			sendTxButton.disabled = false;
+		}
+	})
+		
 
 	function submit_generation() {
 
+		loadEthersJsAndInit();
 		
 		let newgen = document.getElementById("input_text").value;
 		const user_input_empty = (newgen.trim()=="");
